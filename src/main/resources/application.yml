@@ -61,8 +61,8 @@ resilience4j:
         retryExceptions:
           - com.joaogabriel.notifyflow.domain.exception.ChannelDeliveryException
   ratelimiter:
-    instances:
-      default-tenant:
+    configs:
+      default:
         limitForPeriod: 100
         limitRefreshPeriod: 1m
         timeoutDuration: 0s

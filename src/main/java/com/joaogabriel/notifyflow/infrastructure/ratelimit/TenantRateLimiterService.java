@@ -14,7 +14,7 @@ public class TenantRateLimiterService {
     }
 
     public boolean acquirePermission(String tenantId) {
-        RateLimiter rateLimiter = rateLimiterRegistry.rateLimiter("tenant-" + tenantId, "default-tenant");
+        RateLimiter rateLimiter = rateLimiterRegistry.rateLimiter("tenant-" + tenantId);
         return rateLimiter.acquirePermission();
     }
 }
