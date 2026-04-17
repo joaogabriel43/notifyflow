@@ -8,7 +8,9 @@ import lombok.*;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
+
 
 @Entity
 @Table(name = "notifications")
@@ -54,7 +56,8 @@ public class NotificationEntity {
 
     @Column(name = "template_variables", columnDefinition = "jsonb")
     @org.hibernate.annotations.JdbcTypeCode(org.hibernate.type.SqlTypes.JSON)
-    private String templateVariables;
+    private Map<String, String> templateVariables;
+
 
     @Column(name = "created_at", nullable = false, updatable = false)
     private LocalDateTime createdAt;

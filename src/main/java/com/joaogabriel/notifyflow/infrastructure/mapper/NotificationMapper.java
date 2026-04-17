@@ -13,6 +13,7 @@ import org.springframework.stereotype.Component;
 
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -68,7 +69,9 @@ public class NotificationMapper {
                 .recipientDeviceToken(notification.getRecipientInfo().getDeviceToken())
                 .templateSubject(notification.getTemplateContent().getSubject())
                 .templateBody(notification.getTemplateContent().getBody())
-                .templateVariables(notification.getTemplateContent().getVariables())
+                .templateVariables(notification.getTemplateContent().getTemplateVariables() != null 
+                    ? new HashMap<>(notification.getTemplateContent().getTemplateVariables()) 
+                    : new HashMap<>())
                 .createdAt(notification.getCreatedAt())
 
                 .updatedAt(notification.getUpdatedAt())
@@ -94,7 +97,9 @@ public class NotificationMapper {
         var templateContent = new NotificationTemplate(
                 entity.getTemplateSubject(),
                 entity.getTemplateBody(),
-                entity.getTemplateVariables()
+                entity.getTemplateVariables() != null 
+                    ? new HashMap<>(entity.getTemplateVariables()) 
+                    : new HashMap<>()
         );
 
         List<DeliveryAttempt> attempts = Collections.emptyList();
