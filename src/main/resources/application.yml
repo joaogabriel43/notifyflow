@@ -15,9 +15,10 @@ spring:
     locations: classpath:db/migration
   rabbitmq:
     host: ${RABBITMQ_HOST}
-    port: ${RABBITMQ_PORT:5672}
+    port: ${RABBITMQ_PORT}
     username: ${RABBITMQ_USERNAME}
     password: ${RABBITMQ_PASSWORD}
+
 
 
 management:
@@ -54,8 +55,13 @@ resilience4j:
 
 channels:
   email:
-    provider: ${EMAIL_PROVIDER:stub}
-  from-email: ${FROM_EMAIL:noreply@notifyflow.com}
+    provider: ${EMAIL_PROVIDER}
+  from-email: ${FROM_EMAIL}
 
 sendgrid:
-  api-key: ${SENDGRID_API_KEY:not-configured}
+  api-key: ${SENDGRID_API_KEY}
+
+app:
+  cors:
+    allowed-origins: ${ALLOWED_ORIGINS}
+
