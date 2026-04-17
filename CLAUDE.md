@@ -149,6 +149,12 @@ Retornar sempre `ProblemDetail` (RFC 7807) para consistência.
 - **Consequências**: +Rico em opções de visualização | -Dependência adicional de ~1MB
 - **Status**: Aceita
 
+### ADR-011: Multi-stage Docker build para backend e frontend
+- **Contexto**: Imagens Docker menores são mais rápidas para deploy e mais seguras (menos superfície de ataque)
+- **Decisão**: Multi-stage build: builder (JDK 17 / Node 20) → runtime (JRE alpine / nginx alpine)
+- **Consequências**: +Imagem menor (~200MB vs ~600MB), +Sem ferramentas de build em produção | -Build mais lento na primeira execução
+- **Status**: Aceita
+
 
 ## 🤖 Agentes: Casos de Uso Confirmados
 
@@ -164,6 +170,9 @@ Retornar sempre `ProblemDetail` (RFC 7807) para consistência.
 | @senior-developer | SendGrid integration, CorsConfig | 4 |
 | @backend-architect | Rate Limiter, retry endpoint | 4 |
 | @frontend-developer | Dashboard Angular 17 completo | 5 |
+| @devops-automator | Dockerfile multi-stage + GitHub Actions CI | 6 |
+| @engineering-technical-writer | README final de portfólio | 6 |
+
 
 
 ## 📚 Regras de Negócio Relevantes
@@ -190,4 +199,6 @@ Retornar sempre `ProblemDetail` (RFC 7807) para consistência.
 - **1.0.0** (Sprint 1): Documento inicial criado
 - **1.1.0** (Sprint 4): ADRs 007-008, regras de negócio e erros conhecidos
 - **1.2.0** (Sprint 5): ADRs 009-010, tabela de agentes atualizada, stack com Angular 17
+- **1.3.0** (Sprint 6): ADR-011, README final, Dockerfiles e GitHub Actions
+
 
