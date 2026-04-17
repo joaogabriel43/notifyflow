@@ -31,17 +31,18 @@ export class DashboardComponent implements OnInit {
   constructor() {
     effect(() => {
       const notifs = this.notificationState.notifications();
-      this.calculateMetrics(notifs);
+      const total = this.notificationState.totalElements();
+      this.calculateMetrics(notifs, total);
       this.updateChart(notifs);
     });
   }
 
   ngOnInit(): void {
-    this.notificationState.loadNotifications('tenant-001', undefined, 0, 100);
+    this.notificationState.loadNotifications(undefined, undefined, 0, 100);
   }
 
-  private calculateMetrics(notifs: any[]): void {
-    this.totalNotifications = notifs.length;
+  private calculateMetrics(notifs: any[], total: number): void {
+    this.totalNotifications = total;
     if (this.totalNotifications === 0) {
       this.deliveryRate = 0;
       this.failures = 0;
@@ -52,7 +53,10 @@ export class DashboardComponent implements OnInit {
     const delivered = notifs.filter((n: any) => n.status === NotificationStatus.DELIVERED).length;
     this.failures = notifs.filter((n: any) => n.status === NotificationStatus.FAILED || n.status === NotificationStatus.EXHAUSTED).length;
     this.pending = notifs.filter((n: any) => n.status === NotificationStatus.PENDING || n.status === NotificationStatus.SENDING).length;
-    this.deliveryRate = Math.round((delivered / this.totalNotifications) * 100);
+    
+    // We only have the first 100 here, so deliveryRate will be based on the loaded sample 
+    // unless we have a specific count from backend.
+    this.deliveryRate = Math.round((delivered / notifs.length) * 100);
   }
 
   private updateChart(notifs: any[]): void {
