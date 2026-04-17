@@ -63,6 +63,7 @@ sendgrid:
   api-key: ${SENDGRID_API_KEY}
 
 app:
+  base-url: ${APP_BASE_URL:}
   cors:
     allowed-origins: ${ALLOWED_ORIGINS}
 
