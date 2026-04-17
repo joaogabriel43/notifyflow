@@ -13,6 +13,8 @@ import com.joaogabriel.notifyflow.infrastructure.mapper.NotificationMapper;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.UUID;
@@ -27,6 +29,8 @@ import com.joaogabriel.notifyflow.domain.exception.RateLimitExceededException;
 
 @Service
 public class SendNotificationService implements SendNotificationUseCase {
+
+    private static final Logger log = LoggerFactory.getLogger(SendNotificationService.class);
 
     private final NotificationRepositoryPort notificationRepository;
     private final NotificationOutboxPort notificationOutbox;
@@ -46,41 +50,48 @@ public class SendNotificationService implements SendNotificationUseCase {
     @Override
     @Transactional
     public NotificationResponse execute(SendNotificationRequest request) {
-        if (!tenantRateLimiterService.acquirePermission(request.tenantId())) {
-            throw new RateLimitExceededException(request.tenantId());
+        log.info("Processing notification for tenant: {}", request.tenantId());
+        try {
+            if (!tenantRateLimiterService.acquirePermission(request.tenantId())) {
+                throw new RateLimitExceededException(request.tenantId());
+            }
+            var recipientInfo = new RecipientInfo(
+                    request.recipientEmail(),
+                    request.recipientPhone(),
+                    request.recipientDeviceToken()
+            );
+
+            var templateContent = new NotificationTemplate(
+                    request.templateSubject(),
+                    request.templateBody(),
+                    request.templateVariables()
+            );
+
+            var now = LocalDateTime.now();
+            var notification = new Notification(
+                    UUID.randomUUID(),
+                    request.tenantId(),
+                    NotificationStatus.PENDING,
+                    request.preferredChannel(),
+                    request.fallbackChannels() != null ? request.fallbackChannels() : new ArrayList<>(),
+                    recipientInfo,
+                    templateContent,
+                    new ArrayList<>(),
+                    now,
+                    now
+            );
+
+            var saved = notificationRepository.save(notification);
+
+            String payload = String.format("{\"notificationId\":\"%s\",\"tenantId\":\"%s\"}",
+                    saved.getId(), saved.getTenantId());
+            notificationOutbox.saveOutboxEntry(saved.getId(), payload);
+
+            log.info("Notification saved successfully with id: {}", saved.getId());
+            return notificationMapper.toResponse(saved);
+        } catch (Exception e) {
+            log.error("Failed to save notification: {}", e.getMessage(), e);
+            throw e;
         }
-        var recipientInfo = new RecipientInfo(
-                request.recipientEmail(),
-                request.recipientPhone(),
-                request.recipientDeviceToken()
-        );
-
-        var templateContent = new NotificationTemplate(
-                request.templateSubject(),
-                request.templateBody(),
-                request.templateVariables()
-        );
-
-        var now = LocalDateTime.now();
-        var notification = new Notification(
-                UUID.randomUUID(),
-                request.tenantId(),
-                NotificationStatus.PENDING,
-                request.preferredChannel(),
-                request.fallbackChannels() != null ? request.fallbackChannels() : new ArrayList<>(),
-                recipientInfo,
-                templateContent,
-                new ArrayList<>(),
-                now,
-                now
-        );
-
-        var saved = notificationRepository.save(notification);
-
-        String payload = String.format("{\"notificationId\":\"%s\",\"tenantId\":\"%s\"}",
-                saved.getId(), saved.getTenantId());
-        notificationOutbox.saveOutboxEntry(saved.getId(), payload);
-
-        return notificationMapper.toResponse(saved);
     }
 }

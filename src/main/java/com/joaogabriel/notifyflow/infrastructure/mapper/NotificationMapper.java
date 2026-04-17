@@ -68,7 +68,9 @@ public class NotificationMapper {
                 .recipientDeviceToken(notification.getRecipientInfo().getDeviceToken())
                 .templateSubject(notification.getTemplateContent().getSubject())
                 .templateBody(notification.getTemplateContent().getBody())
+                .templateVariables(notification.getTemplateContent().getVariables())
                 .createdAt(notification.getCreatedAt())
+
                 .updatedAt(notification.getUpdatedAt())
                 .build();
 
@@ -92,7 +94,7 @@ public class NotificationMapper {
         var templateContent = new NotificationTemplate(
                 entity.getTemplateSubject(),
                 entity.getTemplateBody(),
-                null
+                entity.getTemplateVariables()
         );
 
         List<DeliveryAttempt> attempts = Collections.emptyList();

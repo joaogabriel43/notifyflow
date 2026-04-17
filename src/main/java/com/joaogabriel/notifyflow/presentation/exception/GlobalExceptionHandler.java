@@ -10,6 +10,7 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
+import jakarta.servlet.http.HttpServletRequest;
 import java.net.URI;
 import java.time.Instant;
 import java.util.List;
@@ -86,12 +87,14 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(Exception.class)
-    public ProblemDetail handleGeneral(Exception ex) {
-        log.error("Unexpected error occurred", ex);
+    public ProblemDetail handleGenericException(Exception ex, HttpServletRequest request) {
+        log.error("Unexpected error on {}: {}", request.getRequestURI(), ex.getMessage(), ex);
         ProblemDetail problem = ProblemDetail.forStatusAndDetail(
-                HttpStatus.INTERNAL_SERVER_ERROR, "An unexpected error occurred");
-        problem.setTitle("Internal Server Error");
+            HttpStatus.INTERNAL_SERVER_ERROR, ex.getMessage() // expor mensagem real temporariamente
+        );
         problem.setType(URI.create("https://notifyflow.com/errors/internal"));
+        problem.setTitle("Internal Server Error");
+        problem.setProperty("instance", request.getRequestURI());
         problem.setProperty("timestamp", Instant.now());
         return problem;
     }
