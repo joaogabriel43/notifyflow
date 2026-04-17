@@ -196,3 +196,79 @@ button.send-btn,
     transform: scale(1.02);
   }
 }
+
+[data-theme="dark"] {
+  // Dialog principal
+  .cdk-overlay-container,
+  .cdk-overlay-pane {
+    .mat-mdc-dialog-surface,
+    .mdc-dialog__surface {
+      background-color: #2c2c2e !important;
+      color: #f5f5f7 !important;
+    }
+  }
+
+  // Todos os inputs e textareas dentro do dialog
+  .mat-mdc-dialog-container {
+    input,
+    textarea,
+    .mat-mdc-input-element,
+    .mdc-text-field__input {
+      color: #f5f5f7 !important;
+      background-color: transparent !important;
+      caret-color: #0a84ff !important;
+    }
+
+    .mat-mdc-text-field-wrapper,
+    .mdc-text-field {
+      background-color: #3a3a3c !important;
+    }
+
+    .mdc-text-field--filled {
+      background-color: #3a3a3c !important;
+    }
+
+    .mdc-text-field--filled:not(.mdc-text-field--disabled) {
+      background-color: #3a3a3c !important;
+    }
+
+    .mat-mdc-form-field-focus-overlay {
+      background-color: transparent !important;
+    }
+
+    .mdc-floating-label,
+    .mat-mdc-floating-label {
+      color: #98989d !important;
+    }
+
+    // Select options
+    .mat-mdc-select-value-text {
+      color: #f5f5f7 !important;
+    }
+  }
+
+  // Tela de detalhe — campos Subject e Body (read-only)
+  .notification-detail {
+    input[readonly],
+    textarea[readonly],
+    .detail-field {
+      background-color: #3a3a3c !important;
+      color: #f5f5f7 !important;
+      border: 1px solid rgba(255,255,255,0.1) !important;
+      border-radius: 10px !important;
+    }
+  }
+
+  // Qualquer input readonly em qualquer lugar
+  input[readonly],
+  textarea[readonly] {
+    background-color: #3a3a3c !important;
+    color: #f5f5f7 !important;
+  }
+
+  // Placeholder
+  input::placeholder,
+  textarea::placeholder {
+    color: #636366 !important;
+  }
+}
