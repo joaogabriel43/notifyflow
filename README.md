@@ -3,6 +3,7 @@
 > Motor de notificações multi-canal assíncrono com garantia de entrega.
 
 [![CI](https://github.com/joaogabriel43/notifyflow/actions/workflows/ci.yml/badge.svg)](https://github.com/joaogabriel43/notifyflow/actions/workflows/ci.yml)
+[![Live Demo](https://img.shields.io/badge/Live_Demo-notifyflow--production.up.railway.app-success?style=flat-square&logo=railway)](https://notifyflow-production.up.railway.app)
 
 ---
 
