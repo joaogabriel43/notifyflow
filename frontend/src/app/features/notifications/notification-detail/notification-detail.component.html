@@ -4,7 +4,7 @@
   </div>
 
   <div class="actions-header">
-    <button mat-button routerLink="/notifications">
+    <button mat-button routerLink="/notifications" class="back-btn">
       <mat-icon>arrow_back</mat-icon> Back to List
     </button>
     <button mat-flat-button color="warn" *ngIf="canRetry()" (click)="retry()">
@@ -61,10 +61,10 @@
       <div class="template-section">
         <h3>Template</h3>
         <label>Subject</label>
-        <div class="subject-box">{{ item.templateSubject }}</div>
+        <div class="detail-text-field">{{ item.templateSubject }}</div>
         
         <label>Body</label>
-        <div class="body-box">{{ item.templateBody }}</div>
+        <div class="detail-text-field detail-text-field--body">{{ item.templateBody }}</div>
       </div>
 
       <mat-divider class="my-divider"></mat-divider>

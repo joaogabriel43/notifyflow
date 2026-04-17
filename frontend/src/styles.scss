@@ -198,77 +198,101 @@ button.send-btn,
 }
 
 [data-theme="dark"] {
-  // Dialog principal
-  .cdk-overlay-container,
-  .cdk-overlay-pane {
-    .mat-mdc-dialog-surface,
-    .mdc-dialog__surface {
-      background-color: #2c2c2e !important;
-      color: #f5f5f7 !important;
+  // Botões de texto (Cancel, Back to List)
+  .mat-mdc-button,
+  .mdc-button,
+  button[mat-button],
+  .back-button,
+  a.back-btn,
+  .back-btn {
+    color: var(--accent) !important;
+  }
+
+  // Dialog border-radius e título
+  .mat-mdc-dialog-container .mdc-dialog__surface {
+    border-radius: 20px !important;
+    background-color: #2c2c2e !important;
+  }
+
+  .mat-mdc-dialog-title,
+  .mdc-dialog__title {
+    color: #f5f5f7 !important;
+  }
+
+  // Todos os wrappers de campo no dark
+  .mdc-text-field--filled,
+  .mdc-text-field--outlined,
+  .mat-mdc-text-field-wrapper {
+    background-color: #3a3a3c !important;
+    border-radius: 10px !important;
+  }
+
+  .mdc-text-field--filled:not(.mdc-text-field--disabled) {
+    background-color: #3a3a3c !important;
+  }
+
+  // Input e textarea — texto visível
+  input.mdc-text-field__input,
+  textarea.mdc-text-field__input,
+  .mat-mdc-input-element {
+    color: #f5f5f7 !important;
+  }
+
+  // Labels flutuantes
+  .mdc-floating-label,
+  label.mdc-floating-label {
+    color: #98989d !important;
+  }
+
+  // Select valor e seta
+  .mat-mdc-select-value,
+  .mat-mdc-select-value-text,
+  .mat-mdc-select-placeholder {
+    color: #f5f5f7 !important;
+  }
+
+  .mat-mdc-select-arrow svg {
+    fill: #98989d !important;
+  }
+
+  // Painel de opções do select
+  .mat-mdc-select-panel {
+    background: #2c2c2e !important;
+  }
+
+  .mat-mdc-option {
+    color: #f5f5f7 !important;
+    background-color: #2c2c2e !important;
+
+    &:hover {
+      background-color: #3a3a3c !important;
     }
   }
 
-  // Todos os inputs e textareas dentro do dialog
-  .mat-mdc-dialog-container {
-    input,
-    textarea,
-    .mat-mdc-input-element,
-    .mdc-text-field__input {
-      color: #f5f5f7 !important;
-      background-color: transparent !important;
-      caret-color: #0a84ff !important;
-    }
-
-    .mat-mdc-text-field-wrapper,
-    .mdc-text-field {
-      background-color: #3a3a3c !important;
-    }
-
-    .mdc-text-field--filled {
-      background-color: #3a3a3c !important;
-    }
-
-    .mdc-text-field--filled:not(.mdc-text-field--disabled) {
-      background-color: #3a3a3c !important;
-    }
-
-    .mat-mdc-form-field-focus-overlay {
-      background-color: transparent !important;
-    }
-
-    .mdc-floating-label,
-    .mat-mdc-floating-label {
-      color: #98989d !important;
-    }
-
-    // Select options
-    .mat-mdc-select-value-text {
-      color: #f5f5f7 !important;
-    }
+  // Campos readonly na tela de detalhe
+  input[readonly],
+  textarea[readonly] {
+    background-color: #3a3a3c !important;
+    color: #f5f5f7 !important;
+    border-radius: 10px !important;
   }
 
-  // Tela de detalhe — campos Subject e Body (read-only)
+  // Placeholder
+  ::placeholder {
+    color: #636366 !important;
+    opacity: 1 !important;
+  }
+
+  // Fallback for detail container if needed
   .notification-detail {
     input[readonly],
     textarea[readonly],
-    .detail-field {
+    .detail-field,
+    .detail-text-field {
       background-color: #3a3a3c !important;
       color: #f5f5f7 !important;
       border: 1px solid rgba(255,255,255,0.1) !important;
       border-radius: 10px !important;
     }
-  }
-
-  // Qualquer input readonly em qualquer lugar
-  input[readonly],
-  textarea[readonly] {
-    background-color: #3a3a3c !important;
-    color: #f5f5f7 !important;
-  }
-
-  // Placeholder
-  input::placeholder,
-  textarea::placeholder {
-    color: #636366 !important;
   }
 }
