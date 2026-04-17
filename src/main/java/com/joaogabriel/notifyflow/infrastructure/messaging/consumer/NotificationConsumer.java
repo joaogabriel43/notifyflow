@@ -25,7 +25,7 @@ public class NotificationConsumer {
     @RabbitListener(queues = "notifyflow.queue.send")
     @Transactional
     public void consume(NotificationMessage message) {
-        log.info("Received notification message for ID: {}", message.notificationId());
+        log.info("Consuming notification message: {}", message.notificationId());
 
         Notification notification = notificationRepository.findById(message.notificationId())
                 .orElseThrow(() -> new IllegalArgumentException("Notification not found for id: " + message.notificationId()));

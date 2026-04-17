@@ -83,8 +83,8 @@ public class SendNotificationService implements SendNotificationUseCase {
 
             var saved = notificationRepository.save(notification);
 
-            String payload = String.format("{\"notificationId\":\"%s\",\"tenantId\":\"%s\"}",
-                    saved.getId(), saved.getTenantId());
+            String payload = String.format("{\"notificationId\":\"%s\",\"tenantId\":\"%s\",\"channel\":\"%s\",\"createdAt\":\"%s\"}",
+                    saved.getId(), saved.getTenantId(), saved.getPreferredChannel(), saved.getCreatedAt());
             notificationOutbox.saveOutboxEntry(saved.getId(), payload);
 
             log.info("Notification saved successfully with id: {}", saved.getId());
