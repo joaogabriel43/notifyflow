@@ -27,3 +27,19 @@ management:
 springdoc:
   swagger-ui:
     path: /swagger-ui.html
+
+resilience4j:
+  circuitbreaker:
+    instances:
+      channelSender:
+        slidingWindowSize: 10
+        failureRateThreshold: 50
+        waitDurationInOpenState: 10s
+        permittedNumberOfCallsInHalfOpenState: 3
+  retry:
+    instances:
+      channelSender:
+        maxAttempts: 3
+        waitDuration: 500ms
+        retryExceptions:
+          - com.joaogabriel.notifyflow.domain.exception.ChannelDeliveryException

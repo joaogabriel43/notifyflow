@@ -24,11 +24,10 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@SpringBootTest
 @AutoConfigureMockMvc
 @ActiveProfiles("test")
 @DisplayName("OutboxScheduler Integration Tests")
-class OutboxSchedulerIntegrationTest {
+class OutboxSchedulerIntegrationTest extends com.joaogabriel.notifyflow.BaseIntegrationTest {
 
     @Autowired
     private MockMvc mockMvc;
@@ -41,9 +40,6 @@ class OutboxSchedulerIntegrationTest {
 
     @Autowired
     private NotificationOutboxJpaRepository outboxRepository;
-
-    @MockBean
-    private RabbitTemplate rabbitTemplate;
 
     @BeforeEach
     void setUp() {

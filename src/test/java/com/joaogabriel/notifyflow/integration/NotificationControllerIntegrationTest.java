@@ -26,11 +26,10 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-@SpringBootTest
 @AutoConfigureMockMvc
 @ActiveProfiles("test")
 @DisplayName("NotificationController Integration Tests")
-class NotificationControllerIntegrationTest {
+class NotificationControllerIntegrationTest extends com.joaogabriel.notifyflow.BaseIntegrationTest {
 
     @Autowired
     private MockMvc mockMvc;
@@ -43,9 +42,6 @@ class NotificationControllerIntegrationTest {
 
     @Autowired
     private NotificationOutboxJpaRepository outboxRepository;
-
-    @MockBean
-    private RabbitTemplate rabbitTemplate;
 
     @BeforeEach
     void setUp() {
