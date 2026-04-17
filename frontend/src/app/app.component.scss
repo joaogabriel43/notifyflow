@@ -1,70 +1,119 @@
-.sidenav-container {
-  position: absolute;
+.navbar {
+  position: sticky;
   top: 0;
-  bottom: 0;
-  left: 0;
-  right: 0;
-}
-
-.sidenav {
-  width: 250px;
-  background-color: var(--bg-card);
-  border-right: 1px solid var(--border);
-}
-
-.logo-container {
+  z-index: 1000;
+  height: 52px;
+  padding: 0 32px;
   display: flex;
   align-items: center;
-  padding: 24px 16px;
-  gap: 12px;
-  color: var(--accent);
+  justify-content: space-between;
+  background: rgba(255, 255, 255, 0.72);
+  backdrop-filter: saturate(180%) blur(20px);
+  -webkit-backdrop-filter: saturate(180%) blur(20px);
   border-bottom: 1px solid var(--border);
+  transition: background 0.3s ease;
 
-  mat-icon {
-    font-size: 32px;
-    width: 32px;
-    height: 32px;
-  }
-
-  h2 {
-    margin: 0;
-    font-weight: 500;
+  [data-theme="dark"] & {
+    background: rgba(0, 0, 0, 0.72);
   }
 }
 
-.active-link {
-  background-color: rgba(0, 113, 227, 0.1);
-  color: var(--accent);
-  
-  mat-icon {
+.logo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 17px;
+  font-weight: 600;
+  color: var(--text-primary);
+  text-decoration: none;
+  letter-spacing: -0.3px;
+
+  svg {
     color: var(--accent);
   }
 }
 
-.navbar {
-  position: sticky;
-  top: 0;
-  z-index: 100;
-  background: rgba(255, 255, 255, 0.72);
-  backdrop-filter: saturate(180%) blur(20px);
-  border-bottom: 1px solid var(--border);
-  padding: 0 24px;
-  height: 52px;
+.nav-links {
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  gap: 8px;
+
+  a {
+    padding: 6px 14px;
+    border-radius: 100px;
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--text-secondary);
+    text-decoration: none;
+    transition: all 0.2s ease;
+
+    &:hover, &.active {
+      color: var(--text-primary);
+      background: var(--bg-secondary);
+    }
+  }
 }
 
-[data-theme="dark"] .navbar {
-  background: rgba(0, 0, 0, 0.72);
+.nav-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
 }
 
-.spacer {
-  flex: 1 1 auto;
+.theme-toggle {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  border: none;
+  background: var(--bg-secondary);
+  color: var(--text-primary);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+
+  &:hover {
+    background: var(--border);
+    transform: scale(1.05);
+  }
+
+  svg {
+    width: 16px;
+    height: 16px;
+  }
+}
+
+.sidebar {
+  width: 220px;
+  min-height: calc(100vh - 52px);
+  background: var(--bg-secondary);
+  border-right: 1px solid var(--border);
+  padding: 24px 16px;
+
+  a {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 14px;
+    border-radius: var(--radius-sm);
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--text-secondary);
+    text-decoration: none;
+    transition: all 0.2s ease;
+    margin-bottom: 4px;
+
+    &:hover, &.active {
+      background: var(--bg-card);
+      color: var(--accent);
+    }
+  }
 }
 
 .main-content {
   height: calc(100% - 52px);
   overflow-y: auto;
   background-color: var(--bg-secondary);
+  padding: 0; // Removed extra padding since dashboard does it
 }

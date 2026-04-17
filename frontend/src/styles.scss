@@ -88,3 +88,37 @@ html, body {
     grid-template-columns: 1fr 1fr !important;
   }
 }
+
+// Forçar dark mode em todos os elementos Material
+[data-theme="dark"] {
+  .mat-mdc-card,
+  .mat-mdc-dialog-container,
+  .mat-mdc-table,
+  .mat-mdc-row,
+  .mat-mdc-header-row,
+  .mat-mdc-form-field,
+  .mdc-text-field,
+  .mat-mdc-select,
+  .mat-mdc-option {
+    background-color: var(--bg-card) !important;
+    color: var(--text-primary) !important;
+  }
+
+  .mat-mdc-header-cell {
+    color: var(--text-secondary) !important;
+    background-color: var(--bg-card) !important;
+  }
+
+  .mat-mdc-cell {
+    color: var(--text-primary) !important;
+    border-color: var(--border) !important;
+  }
+
+  .mdc-text-field--filled {
+    background-color: var(--bg-secondary) !important;
+  }
+
+  .mat-mdc-dialog-surface {
+    background-color: var(--bg-card) !important;
+  }
+}
