@@ -295,4 +295,32 @@ button.send-btn,
       border-radius: 10px !important;
     }
   }
+
+  // Botão Search
+  .search-btn,
+  button.search-btn,
+  .mat-mdc-raised-button.search-btn {
+    background-color: var(--accent) !important;
+    color: #ffffff !important;
+  }
+
+  // Botão Send Notification
+  .send-notification-btn,
+  button.send-notification-btn,
+  .mat-mdc-raised-button.send-notification-btn {
+    background-color: var(--accent) !important;
+    color: #ffffff !important;
+  }
+
+  // Garantir texto branco em todos os raised buttons no dark
+  .mat-mdc-raised-button:not([disabled]) {
+    color: #ffffff !important;
+  }
+
+  // Ícones dentro dos botões
+  .mat-mdc-raised-button .mat-icon,
+  .mat-mdc-raised-button span {
+    color: #ffffff !important;
+  }
 }
+
