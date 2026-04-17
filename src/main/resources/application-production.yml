@@ -1,0 +1,12 @@
+spring:
+  jpa:
+    open-in-view: false
+  thymeleaf:
+    check-template-location: false
+
+management:
+  health:
+    rabbit:
+      enabled: false
+    diskspace:
+      enabled: false
