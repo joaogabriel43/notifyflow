@@ -2,6 +2,8 @@ package com.joaogabriel.notifyflow.presentation.exception;
 
 import com.joaogabriel.notifyflow.domain.exception.AllChannelsExhaustedException;
 import com.joaogabriel.notifyflow.domain.exception.NotificationNotFoundException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ProblemDetail;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -10,6 +12,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import java.net.URI;
 import java.time.Instant;
+import java.util.List;
 import java.util.stream.Collectors;
 
 /**
@@ -18,6 +21,8 @@ import java.util.stream.Collectors;
  */
 @RestControllerAdvice
 public class GlobalExceptionHandler {
+
+    private static final Logger log = LoggerFactory.getLogger(GlobalExceptionHandler.class);
 
     @ExceptionHandler(NotificationNotFoundException.class)
     public ProblemDetail handleNotificationNotFound(NotificationNotFoundException ex) {
@@ -41,15 +46,22 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ProblemDetail handleValidation(MethodArgumentNotValidException ex) {
-        String errors = ex.getBindingResult().getFieldErrors().stream()
+        List<String> fieldErrors = ex.getBindingResult().getFieldErrors().stream()
                 .map(fe -> fe.getField() + ": " + fe.getDefaultMessage())
-                .collect(Collectors.joining(", "));
+                .collect(Collectors.toList());
+
+        List<String> globalErrors = ex.getBindingResult().getGlobalErrors().stream()
+                .map(ge -> ge.getDefaultMessage())
+                .collect(Collectors.toList());
+
+        fieldErrors.addAll(globalErrors);
 
         ProblemDetail problem = ProblemDetail.forStatusAndDetail(
-                HttpStatus.BAD_REQUEST, errors);
+                HttpStatus.BAD_REQUEST, "Validation failed");
         problem.setTitle("Validation Error");
         problem.setType(URI.create("https://notifyflow.com/errors/validation"));
         problem.setProperty("timestamp", Instant.now());
+        problem.setProperty("errors", fieldErrors);
         return problem;
     }
 
@@ -65,6 +77,7 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(Exception.class)
     public ProblemDetail handleGeneral(Exception ex) {
+        log.error("Unexpected error occurred", ex);
         ProblemDetail problem = ProblemDetail.forStatusAndDetail(
                 HttpStatus.INTERNAL_SERVER_ERROR, "An unexpected error occurred");
         problem.setTitle("Internal Server Error");

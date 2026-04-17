@@ -1,0 +1,35 @@
+spring:
+  application:
+    name: notifyflow-test
+  datasource:
+    url: jdbc:h2:mem:notifyflow_test;DB_CLOSE_DELAY=-1;MODE=PostgreSQL
+    driver-class-name: org.h2.Driver
+    username: sa
+    password:
+  jpa:
+    hibernate:
+      ddl-auto: create-drop
+    show-sql: true
+  flyway:
+    enabled: false
+  rabbitmq:
+    host: localhost
+    port: 5672
+    username: guest
+    password: guest
+  autoconfigure:
+    exclude:
+      - org.springframework.boot.autoconfigure.amqp.RabbitAutoConfiguration
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics
+
+springdoc:
+  swagger-ui:
+    path: /swagger-ui.html
+
+scheduling:
+  enabled: false

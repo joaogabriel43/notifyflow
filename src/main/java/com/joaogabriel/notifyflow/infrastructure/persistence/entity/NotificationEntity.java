@@ -49,10 +49,10 @@ public class NotificationEntity {
     @Column(name = "template_subject", length = 500)
     private String templateSubject;
 
-    @Column(name = "template_body", columnDefinition = "TEXT")
+    @Column(name = "template_body")
     private String templateBody;
 
-    @Column(name = "template_variables", columnDefinition = "JSONB")
+    @Column(name = "template_variables")
     private String templateVariables;
 
     @Column(name = "created_at", nullable = false, updatable = false)

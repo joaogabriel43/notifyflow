@@ -8,7 +8,7 @@ import org.springframework.stereotype.Component;
 
 /**
  * Consumer for processing notification messages from RabbitMQ.
- * Actual processing logic will be implemented in Sprint 2.
+ * Actual processing logic will be implemented in Sprint 3.
  */
 @Component
 public class NotificationConsumer {
@@ -18,6 +18,6 @@ public class NotificationConsumer {
     @RabbitListener(queues = RabbitMQConfig.NOTIFICATION_QUEUE)
     public void consume(String message) {
         log.info("Received notification message: {}", message);
-        // Processing logic will be implemented in Sprint 2
+        // Processing logic will be implemented in Sprint 3
     }
 }

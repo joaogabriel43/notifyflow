@@ -18,7 +18,7 @@ import java.util.stream.Collectors;
 
 /**
  * Mapper component for converting between domain models, JPA entities, and DTOs.
- * Uses manual mapping instead of MapStruct generated code for Sprint 1 simplicity.
+ * Uses manual mapping instead of MapStruct generated code for Sprint 1/2 simplicity.
  * Will be migrated to full MapStruct interface in subsequent sprints.
  */
 @Component

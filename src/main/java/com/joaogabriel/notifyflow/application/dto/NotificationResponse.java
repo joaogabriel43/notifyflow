@@ -19,8 +19,8 @@ public record NotificationResponse(
         String recipientEmail,
         String recipientPhone,
         String recipientDeviceToken,
-        String subject,
-        String body,
+        String templateSubject,
+        String templateBody,
         List<DeliveryAttemptResponse> attempts,
         LocalDateTime createdAt,
         LocalDateTime updatedAt

@@ -11,6 +11,7 @@ import com.joaogabriel.notifyflow.domain.port.out.NotificationOutboxPort;
 import com.joaogabriel.notifyflow.domain.port.out.NotificationRepositoryPort;
 import com.joaogabriel.notifyflow.infrastructure.mapper.NotificationMapper;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -19,6 +20,7 @@ import java.util.UUID;
 /**
  * Service implementation for sending notifications.
  * Creates the notification, persists it, and saves an outbox entry for async processing.
+ * Everything runs within a single @Transactional to guarantee consistency (Outbox Pattern).
  */
 @Service
 public class SendNotificationService implements SendNotificationUseCase {
@@ -36,6 +38,7 @@ public class SendNotificationService implements SendNotificationUseCase {
     }
 
     @Override
+    @Transactional
     public NotificationResponse execute(SendNotificationRequest request) {
         var recipientInfo = new RecipientInfo(
                 request.recipientEmail(),
@@ -44,8 +47,8 @@ public class SendNotificationService implements SendNotificationUseCase {
         );
 
         var templateContent = new NotificationTemplate(
-                request.subject(),
-                request.body(),
+                request.templateSubject(),
+                request.templateBody(),
                 request.templateVariables()
         );
 
@@ -64,7 +67,10 @@ public class SendNotificationService implements SendNotificationUseCase {
         );
 
         var saved = notificationRepository.save(notification);
-        notificationOutbox.saveOutboxEntry(saved.getId(), saved.getId().toString());
+
+        String payload = String.format("{\"notificationId\":\"%s\",\"tenantId\":\"%s\"}",
+                saved.getId(), saved.getTenantId());
+        notificationOutbox.saveOutboxEntry(saved.getId(), payload);
 
         return notificationMapper.toResponse(saved);
     }

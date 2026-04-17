@@ -1,9 +1,12 @@
 package com.joaogabriel.notifyflow.infrastructure.persistence.adapter;
 
+import com.joaogabriel.notifyflow.domain.enums.NotificationStatus;
 import com.joaogabriel.notifyflow.domain.model.Notification;
 import com.joaogabriel.notifyflow.domain.port.out.NotificationRepositoryPort;
 import com.joaogabriel.notifyflow.infrastructure.mapper.NotificationMapper;
 import com.joaogabriel.notifyflow.infrastructure.persistence.repository.NotificationJpaRepository;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Component;
 
 import java.util.Optional;
@@ -35,6 +38,16 @@ public class NotificationRepositoryAdapter implements NotificationRepositoryPort
     @Override
     public Optional<Notification> findById(UUID id) {
         return jpaRepository.findById(id)
+                .map(mapper::toDomain);
+    }
+
+    @Override
+    public Page<Notification> findByTenantIdAndStatus(String tenantId, NotificationStatus status, Pageable pageable) {
+        if (status != null) {
+            return jpaRepository.findByTenantIdAndStatus(tenantId, status, pageable)
+                    .map(mapper::toDomain);
+        }
+        return jpaRepository.findByTenantId(tenantId, pageable)
                 .map(mapper::toDomain);
     }
 }

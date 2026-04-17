@@ -8,7 +8,6 @@ import org.springframework.stereotype.Component;
 
 /**
  * Publisher for sending notification messages to RabbitMQ.
- * Actual publishing logic will be implemented in Sprint 2.
  */
 @Component
 public class NotificationPublisher {
@@ -22,7 +21,8 @@ public class NotificationPublisher {
     }
 
     public void publish(String payload) {
-        log.info("Publishing notification to queue: {}", RabbitMQConfig.NOTIFICATION_QUEUE);
+        log.info("Publishing notification to exchange: {} with routing key: {}",
+                RabbitMQConfig.NOTIFICATION_EXCHANGE, RabbitMQConfig.NOTIFICATION_ROUTING_KEY);
         rabbitTemplate.convertAndSend(
                 RabbitMQConfig.NOTIFICATION_EXCHANGE,
                 RabbitMQConfig.NOTIFICATION_ROUTING_KEY,

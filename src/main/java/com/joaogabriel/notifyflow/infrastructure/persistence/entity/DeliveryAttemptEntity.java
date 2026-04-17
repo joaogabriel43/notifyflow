@@ -33,7 +33,7 @@ public class DeliveryAttemptEntity {
     @Column(nullable = false, length = 10)
     private AttemptResult result;
 
-    @Column(name = "error_message", columnDefinition = "TEXT")
+    @Column(name = "error_message")
     private String errorMessage;
 
     @Column(name = "attempted_at", nullable = false)

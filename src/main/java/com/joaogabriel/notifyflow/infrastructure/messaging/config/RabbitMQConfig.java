@@ -8,28 +8,28 @@ import org.springframework.context.annotation.Configuration;
 
 /**
  * RabbitMQ configuration for notification queues and exchanges.
- * Defines the main notification queue, exchange, and dead letter queue.
+ * Defines the main notification queue, exchange, dead letter queue and exchange.
  */
 @Configuration
 public class RabbitMQConfig {
 
-    public static final String NOTIFICATION_QUEUE = "notification.queue";
-    public static final String NOTIFICATION_EXCHANGE = "notification.exchange";
-    public static final String NOTIFICATION_ROUTING_KEY = "notification.routing.key";
-    public static final String DLQ_QUEUE = "notification.dlq";
-    public static final String DLQ_EXCHANGE = "notification.dlq.exchange";
+    public static final String NOTIFICATION_EXCHANGE = "notifyflow.notifications";
+    public static final String NOTIFICATION_QUEUE = "notifyflow.queue.send";
+    public static final String NOTIFICATION_ROUTING_KEY = "notification.send";
+    public static final String DLX_EXCHANGE = "notifyflow.dlx";
+    public static final String DLQ_QUEUE = "notifyflow.queue.send.dlq";
+
+    @Bean
+    public DirectExchange notificationExchange() {
+        return new DirectExchange(NOTIFICATION_EXCHANGE, true, false);
+    }
 
     @Bean
     public Queue notificationQueue() {
         return QueueBuilder.durable(NOTIFICATION_QUEUE)
-                .withArgument("x-dead-letter-exchange", DLQ_EXCHANGE)
+                .withArgument("x-dead-letter-exchange", DLX_EXCHANGE)
                 .withArgument("x-dead-letter-routing-key", DLQ_QUEUE)
                 .build();
-    }
-
-    @Bean
-    public DirectExchange notificationExchange() {
-        return new DirectExchange(NOTIFICATION_EXCHANGE);
     }
 
     @Bean
@@ -40,13 +40,13 @@ public class RabbitMQConfig {
     }
 
     @Bean
-    public Queue deadLetterQueue() {
-        return QueueBuilder.durable(DLQ_QUEUE).build();
+    public DirectExchange deadLetterExchange() {
+        return new DirectExchange(DLX_EXCHANGE, true, false);
     }
 
     @Bean
-    public DirectExchange deadLetterExchange() {
-        return new DirectExchange(DLQ_EXCHANGE);
+    public Queue deadLetterQueue() {
+        return QueueBuilder.durable(DLQ_QUEUE).build();
     }
 
     @Bean

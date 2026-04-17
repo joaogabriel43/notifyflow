@@ -22,12 +22,13 @@ public class NotificationOutboxEntity {
     @Column(name = "notification_id", nullable = false)
     private UUID notificationId;
 
-    @Column(nullable = false, columnDefinition = "JSONB")
+    @Column(nullable = false)
     private String payload;
 
+    @Enumerated(EnumType.STRING)
     @Column(nullable = false, length = 20)
     @Builder.Default
-    private String status = "PENDING";
+    private OutboxStatus status = OutboxStatus.PENDING;
 
     @Column(name = "created_at", nullable = false, updatable = false)
     private LocalDateTime createdAt;
