@@ -43,3 +43,17 @@ resilience4j:
         waitDuration: 500ms
         retryExceptions:
           - com.joaogabriel.notifyflow.domain.exception.ChannelDeliveryException
+  ratelimiter:
+    instances:
+      default-tenant:
+        limitForPeriod: 100
+        limitRefreshPeriod: 1m
+        timeoutDuration: 0s
+
+channels:
+  email:
+    provider: ${EMAIL_PROVIDER:stub}
+  from-email: ${FROM_EMAIL:noreply@notifyflow.com}
+
+sendgrid:
+  api-key: ${SENDGRID_API_KEY:not-configured}

@@ -121,6 +121,9 @@ Retornar sempre `ProblemDetail` (RFC 7807) para consistência.
 - O fallback entre canais é determinado pela lista `fallbackChannels` na ordem definida
 - Uma notificação com status `EXHAUSTED` não deve ser reprocessada automaticamente
 - O `tenantId` é obrigatório — o sistema é multi-tenant desde o início
+- Limite padrão: 100 notificações por minuto por tenant
+- Apenas notificações com status FAILED ou EXHAUSTED podem ser reprocessadas via /retry
+- O reprocessamento cria novo registro no outbox — não reutiliza o registro anterior
 
 ## 🔗 Dependências e Integrações Relevantes
 

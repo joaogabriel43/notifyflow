@@ -62,6 +62,14 @@ public class Notification {
     }
 
     /**
+     * Resets the notification status to PENDING for retry.
+     */
+    public void resetForRetry() {
+        this.status = NotificationStatus.PENDING;
+        this.updatedAt = LocalDateTime.now();
+    }
+
+    /**
      * Marks the notification as failed.
      */
     public void markFailed() {

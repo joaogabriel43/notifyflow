@@ -75,6 +75,16 @@ public class GlobalExceptionHandler {
         return problem;
     }
 
+    @ExceptionHandler(com.joaogabriel.notifyflow.domain.exception.RateLimitExceededException.class)
+    public ProblemDetail handleRateLimitExceeded(com.joaogabriel.notifyflow.domain.exception.RateLimitExceededException ex) {
+        ProblemDetail problem = ProblemDetail.forStatusAndDetail(
+                HttpStatus.TOO_MANY_REQUESTS, ex.getMessage());
+        problem.setTitle("Too Many Requests");
+        problem.setType(URI.create("https://notifyflow.com/errors/rate-limit"));
+        problem.setProperty("timestamp", Instant.now());
+        return problem;
+    }
+
     @ExceptionHandler(Exception.class)
     public ProblemDetail handleGeneral(Exception ex) {
         log.error("Unexpected error occurred", ex);

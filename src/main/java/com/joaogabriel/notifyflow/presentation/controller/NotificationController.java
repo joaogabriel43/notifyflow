@@ -31,11 +31,25 @@ public class NotificationController {
 
     private final SendNotificationUseCase sendNotificationUseCase;
     private final GetNotificationUseCase getNotificationUseCase;
+    private final com.joaogabriel.notifyflow.application.service.RetryNotificationService retryNotificationService;
 
     public NotificationController(SendNotificationUseCase sendNotificationUseCase,
-                                  GetNotificationUseCase getNotificationUseCase) {
+                                  GetNotificationUseCase getNotificationUseCase,
+                                  com.joaogabriel.notifyflow.application.service.RetryNotificationService retryNotificationService) {
         this.sendNotificationUseCase = sendNotificationUseCase;
         this.getNotificationUseCase = getNotificationUseCase;
+        this.retryNotificationService = retryNotificationService;
+    }
+
+    @PostMapping("/{id}/retry")
+    @Operation(summary = "Retry a failed notification", description = "Resets status and requeues for delivery")
+    @ApiResponses({
+            @ApiResponse(responseCode = "202", description = "Notification retry accepted"),
+            @ApiResponse(responseCode = "422", description = "Notification cannot be retried (not FAILED or EXHAUSTED)")
+    })
+    public ResponseEntity<NotificationResponse> retry(@PathVariable UUID id) {
+        var response = retryNotificationService.retryNotification(id);
+        return ResponseEntity.accepted().body(response);
     }
 
     @PostMapping

@@ -22,24 +22,33 @@ import java.util.UUID;
  * Creates the notification, persists it, and saves an outbox entry for async processing.
  * Everything runs within a single @Transactional to guarantee consistency (Outbox Pattern).
  */
+import com.joaogabriel.notifyflow.infrastructure.ratelimit.TenantRateLimiterService;
+import com.joaogabriel.notifyflow.domain.exception.RateLimitExceededException;
+
 @Service
 public class SendNotificationService implements SendNotificationUseCase {
 
     private final NotificationRepositoryPort notificationRepository;
     private final NotificationOutboxPort notificationOutbox;
     private final NotificationMapper notificationMapper;
+    private final TenantRateLimiterService tenantRateLimiterService;
 
     public SendNotificationService(NotificationRepositoryPort notificationRepository,
                                    NotificationOutboxPort notificationOutbox,
-                                   NotificationMapper notificationMapper) {
+                                   NotificationMapper notificationMapper,
+                                   TenantRateLimiterService tenantRateLimiterService) {
         this.notificationRepository = notificationRepository;
         this.notificationOutbox = notificationOutbox;
         this.notificationMapper = notificationMapper;
+        this.tenantRateLimiterService = tenantRateLimiterService;
     }
 
     @Override
     @Transactional
     public NotificationResponse execute(SendNotificationRequest request) {
+        if (!tenantRateLimiterService.acquirePermission(request.tenantId())) {
+            throw new RateLimitExceededException(request.tenantId());
+        }
         var recipientInfo = new RecipientInfo(
                 request.recipientEmail(),
                 request.recipientPhone(),

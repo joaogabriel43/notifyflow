@@ -210,4 +210,71 @@ class NotificationControllerIntegrationTest extends com.joaogabriel.notifyflow.B
                 .andExpect(jsonPath("$.totalElements").value(2))
                 .andExpect(jsonPath("$.content[0].tenantId").value("tenant-001"));
     }
+
+    @Test
+    @DisplayName("POST /api/v1/notifications/{id}/retry on FAILED notification returns 202")
+    void retry_FailedNotification_Returns202() throws Exception {
+        var notification = new com.joaogabriel.notifyflow.infrastructure.persistence.entity.NotificationEntity();
+        notification.setId(UUID.randomUUID());
+        notification.setTenantId("tenant-retry");
+        notification.setStatus(com.joaogabriel.notifyflow.domain.enums.NotificationStatus.FAILED);
+        notification.setPreferredChannel(com.joaogabriel.notifyflow.domain.enums.Channel.EMAIL);
+        notification.setCreatedAt(java.time.LocalDateTime.now());
+        notification.setUpdatedAt(java.time.LocalDateTime.now());
+        notification = notificationRepository.save(notification);
+
+        mockMvc.perform(post("/api/v1/notifications/{id}/retry", notification.getId())
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isAccepted())
+                .andExpect(jsonPath("$.status").value("PENDING"));
+    }
+
+    @Test
+    @DisplayName("POST /api/v1/notifications/{id}/retry on PENDING notification returns 400/422")
+    void retry_PendingNotification_ReturnsError() throws Exception {
+        var notification = new com.joaogabriel.notifyflow.infrastructure.persistence.entity.NotificationEntity();
+        notification.setId(UUID.randomUUID());
+        notification.setTenantId("tenant-pending");
+        notification.setStatus(com.joaogabriel.notifyflow.domain.enums.NotificationStatus.PENDING);
+        notification.setPreferredChannel(com.joaogabriel.notifyflow.domain.enums.Channel.EMAIL);
+        notification.setCreatedAt(java.time.LocalDateTime.now());
+        notification.setUpdatedAt(java.time.LocalDateTime.now());
+        notification = notificationRepository.save(notification);
+
+        mockMvc.perform(post("/api/v1/notifications/{id}/retry", notification.getId())
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.detail").value("Only FAILED or EXHAUSTED notifications can be retried"));
+    }
+
+    @Test
+    @DisplayName("POST /api/v1/notifications above rate limit returns 429")
+    void send_AboveRateLimit_Returns429() throws Exception {
+        String tenant = "tenant-ratelimited";
+        SendNotificationRequest request = new SendNotificationRequest(
+                tenant,
+                Channel.EMAIL,
+                List.of(Channel.SMS),
+                "test@test.com",
+                null,
+                null,
+                "Sub",
+                "Body",
+                Map.of()
+        );
+
+        // Limit is 100 per minute
+        for (int i = 0; i < 100; i++) {
+            mockMvc.perform(post("/api/v1/notifications")
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .content(objectMapper.writeValueAsString(request)))
+                    .andExpect(status().isCreated());
+        }
+
+        mockMvc.perform(post("/api/v1/notifications")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(request)))
+                .andExpect(status().isTooManyRequests())
+                .andExpect(jsonPath("$.detail").value("Rate limit exceeded for tenant: " + tenant));
+    }
 }

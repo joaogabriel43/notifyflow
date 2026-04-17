@@ -5,9 +5,11 @@ import com.joaogabriel.notifyflow.domain.exception.ChannelDeliveryException;
 import com.joaogabriel.notifyflow.domain.model.Notification;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Component;
 
 @Component("emailChannelSender")
+@ConditionalOnProperty(name = "channels.email.provider", havingValue = "stub", matchIfMissing = true)
 public class EmailChannelSender implements ChannelSender {
     private static final Logger log = LoggerFactory.getLogger(EmailChannelSender.class);
 
