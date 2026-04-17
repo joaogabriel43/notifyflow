@@ -1,0 +1,110 @@
+<div class="list-container">
+  <div class="header-actions">
+    <div class="filters">
+      <mat-form-field appearance="outline">
+        <mat-label>Tenant ID</mat-label>
+        <input matInput [(ngModel)]="tenantId" (keyup.enter)="loadData()">
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Status</mat-label>
+        <mat-select [(ngModel)]="statusFilter" (selectionChange)="loadData()">
+          <mat-option value="">All</mat-option>
+          <mat-option *ngFor="let status of statuses" [value]="status">
+            {{ status | notificationStatus }}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+
+      <button mat-flat-button color="primary" class="search-btn" (click)="loadData()">
+        <mat-icon>search</mat-icon> Search
+      </button>
+    </div>
+
+    <button mat-flat-button color="accent" (click)="openNotificationForm()">
+      <mat-icon>send</mat-icon> Send Notification
+    </button>
+  </div>
+
+  <div class="table-container mat-elevation-z2">
+    <div class="loading-shade" *ngIf="notificationState.loading()">
+      <mat-spinner></mat-spinner>
+    </div>
+
+    <table mat-table [dataSource]="notificationState.notifications()">
+
+      <!-- ID Column -->
+      <ng-container matColumnDef="id">
+        <th mat-header-cell *matHeaderCellDef> ID </th>
+        <td mat-cell *matCellDef="let element" [title]="element.id"> {{element.id | slice:0:8}}... </td>
+      </ng-container>
+
+      <!-- Tenant Column -->
+      <ng-container matColumnDef="tenantId">
+        <th mat-header-cell *matHeaderCellDef> Tenant </th>
+        <td mat-cell *matCellDef="let element"> {{element.tenantId}} </td>
+      </ng-container>
+
+      <!-- Channel Column -->
+      <ng-container matColumnDef="preferredChannel">
+        <th mat-header-cell *matHeaderCellDef> Channel </th>
+        <td mat-cell *matCellDef="let element">
+          <app-channel-icon [channel]="element.preferredChannel"></app-channel-icon>
+        </td>
+      </ng-container>
+
+      <!-- Status Column -->
+      <ng-container matColumnDef="status">
+        <th mat-header-cell *matHeaderCellDef> Status </th>
+        <td mat-cell *matCellDef="let element">
+          <app-status-badge [status]="element.status"></app-status-badge>
+        </td>
+      </ng-container>
+
+      <!-- Fallbacks Column -->
+      <ng-container matColumnDef="fallbackChannels">
+        <th mat-header-cell *matHeaderCellDef> Fallbacks </th>
+        <td mat-cell *matCellDef="let element">
+          <span *ngIf="!element.fallbackChannels || element.fallbackChannels.length === 0">-</span>
+          <span class="fallback-list">
+            <app-channel-icon *ngFor="let c of element.fallbackChannels" [channel]="c"></app-channel-icon>
+          </span>
+        </td>
+      </ng-container>
+
+      <!-- Date Column -->
+      <ng-container matColumnDef="createdAt">
+        <th mat-header-cell *matHeaderCellDef> Date </th>
+        <td mat-cell *matCellDef="let element"> {{element.createdAt | date:'medium'}} </td>
+      </ng-container>
+
+      <!-- Actions Column -->
+      <ng-container matColumnDef="actions">
+        <th mat-header-cell *matHeaderCellDef> Actions </th>
+        <td mat-cell *matCellDef="let element">
+          <button mat-icon-button color="primary" [routerLink]="['/notifications', element.id]" title="View Details">
+            <mat-icon>visibility</mat-icon>
+          </button>
+          <button mat-icon-button color="warn" *ngIf="canRetry(element.status)" (click)="retryNotification(element.id)" title="Retry">
+            <mat-icon>refresh</mat-icon>
+          </button>
+        </td>
+      </ng-container>
+
+      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+      <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+      
+      <tr class="mat-row" *matNoDataRow>
+        <td class="mat-cell empty-cell" colspan="7">No notifications found</td>
+      </tr>
+    </table>
+
+    <mat-paginator 
+      [length]="notificationState.totalElements()"
+      [pageSize]="pageSize"
+      [pageSizeOptions]="[10, 20, 50]"
+      (page)="onPageChange($event)"
+      showFirstLastButtons>
+    </mat-paginator>
+  </div>
+</div>

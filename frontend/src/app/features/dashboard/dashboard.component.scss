@@ -1,0 +1,47 @@
+.dashboard-container {
+  padding: 24px;
+}
+
+.metrics-row {
+  display: flex;
+  gap: 16px;
+  margin-bottom: 24px;
+  flex-wrap: wrap;
+
+  .metric-card {
+    flex: 1;
+    min-width: 200px;
+    
+    mat-card-title {
+      font-size: 32px;
+      font-weight: 300;
+      margin-top: 8px;
+      
+      &.error-text { color: #f44336; }
+      &.pending-text { color: #ff9800; }
+    }
+  }
+}
+
+.content-row {
+  display: flex;
+  gap: 24px;
+  flex-wrap: wrap;
+
+  .chart-card {
+    flex: 1;
+    min-width: 400px;
+    .chart {
+      height: 350px;
+    }
+  }
+
+  .table-card {
+    flex: 1.5;
+    min-width: 500px;
+    
+    table {
+      width: 100%;
+    }
+  }
+}

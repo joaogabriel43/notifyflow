@@ -99,10 +99,56 @@ Retornar sempre `ProblemDetail` (RFC 7807) para consistência.
 - **Status**: Aceita
 
 ## 🐛 Erros Conhecidos e Como Evitá-los
-(seção vazia no início — será preenchida conforme o projeto evolui)
+
+- **[Sprint 2] H2 mascarou comportamento de JSONB e partial indexes**
+  - **O que aconteceu**: Testes de integração usaram H2 no modo PostgreSQL.
+  - **Por que**: Docker não estava disponível na máquina durante o Sprint 2.
+  - **Como prevenir**: Sempre usar Testcontainers com imagem real. Nunca usar H2 em novos testes.
+
+- **[Sprint 3] Código perdido por falta de commit antes de Copy-Item**
+  - **O que aconteceu**: Sprint 3 foi implementado no scratch sem commit. Copy-Item sobrescreveu com versão antiga.
+  - **Por que**: Workflow de cópia scratch → F:\Projetos não garantia commit prévio
+  - **Como prevenir**: Todo prompt inclui commit em F:\Projetos\NotifyFlow como critério de sucesso obrigatório.
+  - **Regra adotada**: NUNCA usar scratch. Trabalhar sempre diretamente em F:\Projetos\NotifyFlow.
+
 
 ## 🚀 Otimizações e Performance
 (seção vazia no início)
+
+### ADR-005: Clean Architecture (Hexagonal)
+- **Contexto**: Necessidade de separação de responsabilidades e testabilidade.
+- **Decisão**: Camadas domain / application / infrastructure / presentation com regra de dependência invertida.
+- **Status**: Aceita
+
+### ADR-006: Testcontainers com PostgreSQL e RabbitMQ
+- **Contexto**: H2 não suporta JSONB e partial indexes do PostgreSQL.
+- **Decisão**: Todos os testes de integração usam Testcontainers com imagens reais.
+- **Status**: Aceita
+
+### ADR-007: SendGrid como provider de email com fallback para stub
+- **Contexto**: Email real requer API key externa. Ambiente de dev deve funcionar sem credenciais.
+- **Decisão**: @ConditionalOnProperty seleciona SendGridEmailSender (prod) ou EmailChannelSender stub (dev)
+- **Consequências**: +Flexibilidade de ambiente | -Dois beans para o mesmo contrato
+- **Status**: Aceita
+
+### ADR-008: Rate Limiter por tenant via Resilience4j RateLimiterRegistry
+- **Contexto**: Sistema multi-tenant precisa limitar abuso por tenant sem impactar outros
+- **Decisão**: RateLimiter criado dinamicamente por tenantId no RateLimiterRegistry
+- **Consequências**: +Isolamento por tenant, +Configurável | -Memória proporcional ao número de tenants
+- **Status**: Aceita
+
+### ADR-009: Angular Signals para estado reativo no frontend
+- **Contexto**: Angular 17 introduziu Signals como alternativa ao RxJS para estado local
+- **Decisão**: Signals para estado da UI (loading, selected item). RxJS apenas para HTTP calls.
+- **Consequências**: +Código mais simples e legível | -Mistura de paradigmas pode confundir
+- **Status**: Aceita
+
+### ADR-010: ngx-echarts para visualização de dados
+- **Contexto**: Dashboard precisa de gráficos de barras para métricas por canal
+- **Decisão**: ngx-echarts (wrapper Angular do Apache ECharts)
+- **Consequências**: +Rico em opções de visualização | -Dependência adicional de ~1MB
+- **Status**: Aceita
+
 
 ## 🤖 Agentes: Casos de Uso Confirmados
 
@@ -113,6 +159,12 @@ Retornar sempre `ProblemDetail` (RFC 7807) para consistência.
 | @engineering-database-optimizer | Migrations Flyway | 1 |
 | @engineering-technical-writer | Criação do CLAUDE.md | 1 |
 | @testing-api-tester | Testes unitários de domínio | 1 |
+| @senior-developer | NotificationConsumer, Circuit Breaker | 3 |
+| @backend-architect | Outbox Pattern e dispatcher | 3 |
+| @senior-developer | SendGrid integration, CorsConfig | 4 |
+| @backend-architect | Rate Limiter, retry endpoint | 4 |
+| @frontend-developer | Dashboard Angular 17 completo | 5 |
+
 
 ## 📚 Regras de Negócio Relevantes
 
@@ -136,3 +188,6 @@ Retornar sempre `ProblemDetail` (RFC 7807) para consistência.
 ## 📝 Changelog do CLAUDE.md
 
 - **1.0.0** (Sprint 1): Documento inicial criado
+- **1.1.0** (Sprint 4): ADRs 007-008, regras de negócio e erros conhecidos
+- **1.2.0** (Sprint 5): ADRs 009-010, tabela de agentes atualizada, stack com Angular 17
+

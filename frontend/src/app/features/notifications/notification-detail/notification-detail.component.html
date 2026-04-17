@@ -1,0 +1,102 @@
+<div class="detail-container">
+  <div class="loading-shade" *ngIf="notificationState.loading()">
+    <mat-spinner></mat-spinner>
+  </div>
+
+  <div class="actions-header">
+    <button mat-button routerLink="/notifications">
+      <mat-icon>arrow_back</mat-icon> Back to List
+    </button>
+    <button mat-flat-button color="warn" *ngIf="canRetry()" (click)="retry()">
+      <mat-icon>refresh</mat-icon> Retry
+    </button>
+  </div>
+
+  <mat-card class="detail-card" *ngIf="notificationState.selectedNotification() as item">
+    <mat-card-header>
+      <mat-icon matCardAvatar>assignment</mat-icon>
+      <mat-card-title>Notification {{ item.id }}</mat-card-title>
+      <mat-card-subtitle>{{ item.createdAt | date:'medium' }}</mat-card-subtitle>
+      
+      <div class="header-status">
+        <app-status-badge [status]="item.status"></app-status-badge>
+      </div>
+    </mat-card-header>
+
+    <mat-card-content>
+      <div class="info-grid">
+        <div class="info-group">
+          <label>Tenant ID</label>
+          <div>{{ item.tenantId }}</div>
+        </div>
+        
+        <div class="info-group">
+          <label>Preferred Channel</label>
+          <div class="flex-val">
+            <app-channel-icon [channel]="item.preferredChannel"></app-channel-icon>
+            {{ item.preferredChannel }}
+          </div>
+        </div>
+
+        <div class="info-group">
+          <label>Fallback Channels</label>
+          <div class="flex-val">
+            <app-channel-icon *ngFor="let c of item.fallbackChannels" [channel]="c"></app-channel-icon>
+            <span *ngIf="!item.fallbackChannels?.length">None</span>
+          </div>
+        </div>
+
+        <div class="info-group">
+          <label>Recipient Info</label>
+          <div>
+            <div *ngIf="item.recipientEmail">Email: {{ item.recipientEmail }}</div>
+            <div *ngIf="item.recipientPhone">Phone: {{ item.recipientPhone }}</div>
+            <div *ngIf="item.recipientDeviceToken">Device: {{ item.recipientDeviceToken | slice:0:15 }}...</div>
+          </div>
+        </div>
+      </div>
+
+      <mat-divider class="my-divider"></mat-divider>
+
+      <div class="template-section">
+        <h3>Template</h3>
+        <label>Subject</label>
+        <div class="subject-box">{{ item.templateSubject }}</div>
+        
+        <label>Body</label>
+        <div class="body-box">{{ item.templateBody }}</div>
+      </div>
+
+      <mat-divider class="my-divider"></mat-divider>
+
+      <div class="timeline-section">
+        <h3>Delivery Attempts Timeline</h3>
+        
+        <div class="empty-msg" *ngIf="!item.attempts || item.attempts.length === 0">
+          No delivery attempts recorded yet.
+        </div>
+
+        <div class="timeline">
+          <div class="timeline-item" *ngFor="let attempt of item.attempts">
+            <div class="timeline-icon" [ngClass]="{'success': attempt.result === 'SUCCESS', 'error': attempt.result === 'FAILED'}">
+              <mat-icon>{{ attempt.result === 'SUCCESS' ? 'check' : 'close' }}</mat-icon>
+            </div>
+            <div class="timeline-content">
+              <div class="attempt-header">
+                <app-channel-icon [channel]="attempt.channel"></app-channel-icon>
+                <strong>{{ attempt.channel }}</strong>
+                <span class="time">{{ attempt.attemptedAt | date:'medium' }}</span>
+              </div>
+              <div class="attempt-result" [ngClass]="{'success-text': attempt.result === 'SUCCESS', 'error-text': attempt.result === 'FAILED'}">
+                Result: {{ attempt.result }}
+              </div>
+              <div class="attempt-error" *ngIf="attempt.result === 'FAILED' && attempt.errorMessage">
+                {{ attempt.errorMessage }}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </mat-card-content>
+  </mat-card>
+</div>

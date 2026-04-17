@@ -1,0 +1,25 @@
+.notification-form {
+  display: flex;
+  flex-direction: column;
+  padding-top: 8px;
+
+  .full-width {
+    width: 100%;
+  }
+
+  .channel-row {
+    display: flex;
+    gap: 16px;
+    
+    .half-width {
+      flex: 1;
+    }
+  }
+
+  .section-title {
+    margin: 16px 0 8px;
+    font-size: 16px;
+    font-weight: 500;
+    color: #3f51b5;
+  }
+}

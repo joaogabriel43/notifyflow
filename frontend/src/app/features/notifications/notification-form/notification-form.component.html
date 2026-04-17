@@ -1,0 +1,66 @@
+<h2 mat-dialog-title>Send Notification</h2>
+<mat-dialog-content>
+  <form [formGroup]="form" class="notification-form">
+    
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>Tenant ID</mat-label>
+      <input matInput formControlName="tenantId" placeholder="e.g., tenant-001">
+      <mat-error *ngIf="form.get('tenantId')?.hasError('required')">Tenant ID is required</mat-error>
+    </mat-form-field>
+
+    <div class="channel-row">
+      <mat-form-field appearance="outline" class="half-width">
+        <mat-label>Preferred Channel</mat-label>
+        <mat-select formControlName="preferredChannel">
+          <mat-option *ngFor="let channel of channels" [value]="channel">{{ channel }}</mat-option>
+        </mat-select>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="half-width">
+        <mat-label>Fallback Channels</mat-label>
+        <mat-select formControlName="fallbackChannels" multiple>
+          <mat-option *ngFor="let channel of channels" [value]="channel">{{ channel }}</mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
+
+    <!-- Dynamic recipient fields based on selected channel -->
+    <mat-form-field appearance="outline" class="full-width" *ngIf="form.get('preferredChannel')?.value === 'EMAIL' || form.get('fallbackChannels')?.value.includes('EMAIL')">
+      <mat-label>Recipient Email</mat-label>
+      <input matInput formControlName="recipientEmail" type="email" placeholder="user@example.com">
+      <mat-error *ngIf="form.get('recipientEmail')?.hasError('required')">Email is required for EMAIL channel</mat-error>
+      <mat-error *ngIf="form.get('recipientEmail')?.hasError('email')">Invalid email format</mat-error>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="full-width" *ngIf="form.get('preferredChannel')?.value === 'SMS' || form.get('fallbackChannels')?.value.includes('SMS')">
+      <mat-label>Recipient Phone</mat-label>
+      <input matInput formControlName="recipientPhone" placeholder="+5511999999999">
+      <mat-error *ngIf="form.get('recipientPhone')?.hasError('required')">Phone is required for SMS channel</mat-error>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="full-width" *ngIf="form.get('preferredChannel')?.value === 'PUSH' || form.get('fallbackChannels')?.value.includes('PUSH')">
+      <mat-label>Device Token</mat-label>
+      <input matInput formControlName="recipientDeviceToken" placeholder="fcm-token-xyz">
+      <mat-error *ngIf="form.get('recipientDeviceToken')?.hasError('required')">Device Token is required for PUSH channel</mat-error>
+    </mat-form-field>
+
+    <h3 class="section-title">Template Configuration</h3>
+
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>Subject</mat-label>
+      <input matInput formControlName="templateSubject">
+      <mat-error *ngIf="form.get('templateSubject')?.hasError('required')">Subject is required</mat-error>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>Body</mat-label>
+      <textarea matInput formControlName="templateBody" rows="4"></textarea>
+      <mat-error *ngIf="form.get('templateBody')?.hasError('required')">Body is required</mat-error>
+    </mat-form-field>
+
+  </form>
+</mat-dialog-content>
+<mat-dialog-actions align="end">
+  <button mat-button (click)="onCancel()">Cancel</button>
+  <button mat-flat-button color="primary" (click)="onSubmit()">Send</button>
+</mat-dialog-actions>
