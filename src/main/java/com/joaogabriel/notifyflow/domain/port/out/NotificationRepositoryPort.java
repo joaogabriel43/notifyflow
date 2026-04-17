@@ -19,4 +19,6 @@ public interface NotificationRepositoryPort {
     Optional<Notification> findById(UUID id);
 
     Page<Notification> findByTenantIdAndStatus(String tenantId, NotificationStatus status, Pageable pageable);
+
+    Page<Notification> findAll(NotificationStatus status, Pageable pageable);
 }

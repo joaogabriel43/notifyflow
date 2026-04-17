@@ -18,5 +18,7 @@ public interface GetNotificationUseCase {
 
     Page<NotificationResponse> findByTenantId(String tenantId, NotificationStatus status, Pageable pageable);
 
+    Page<NotificationResponse> findAll(NotificationStatus status, Pageable pageable);
+
     List<DeliveryAttemptResponse> findAttemptsByNotificationId(UUID id);
 }

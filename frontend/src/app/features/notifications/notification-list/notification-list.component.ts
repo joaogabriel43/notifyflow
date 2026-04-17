@@ -36,7 +36,7 @@ import { NotificationFormComponent } from '../notification-form/notification-for
 export class NotificationListComponent implements OnInit {
   displayedColumns: string[] = ['id', 'tenantId', 'preferredChannel', 'status', 'fallbackChannels', 'createdAt', 'actions'];
   
-  tenantId: string = 'tenant-001';
+  tenantId: string = '';
   statusFilter: string = '';
   statuses = Object.values(NotificationStatus);
   
@@ -54,11 +54,7 @@ export class NotificationListComponent implements OnInit {
   }
 
   loadData(): void {
-    if (!this.tenantId) {
-      this.snackBar.open('Tenant ID is required', 'Close', { duration: 3000 });
-      return;
-    }
-    this.notificationState.loadNotifications(this.tenantId, this.statusFilter || undefined, this.pageIndex, this.pageSize);
+    this.notificationState.loadNotifications(this.tenantId || undefined, this.statusFilter || undefined, this.pageIndex, this.pageSize);
   }
 
   onPageChange(event: PageEvent): void {

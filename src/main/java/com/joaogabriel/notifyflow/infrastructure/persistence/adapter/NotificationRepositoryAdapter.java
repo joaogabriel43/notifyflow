@@ -50,4 +50,14 @@ public class NotificationRepositoryAdapter implements NotificationRepositoryPort
         return jpaRepository.findByTenantId(tenantId, pageable)
                 .map(mapper::toDomain);
     }
+
+    @Override
+    public Page<Notification> findAll(NotificationStatus status, Pageable pageable) {
+        if (status != null) {
+            return jpaRepository.findByStatus(status, pageable)
+                    .map(mapper::toDomain);
+        }
+        return jpaRepository.findAll(pageable)
+                .map(mapper::toDomain);
+    }
 }

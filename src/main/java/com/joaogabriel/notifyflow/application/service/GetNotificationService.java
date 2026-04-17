@@ -46,6 +46,12 @@ public class GetNotificationService implements GetNotificationUseCase {
     }
 
     @Override
+    public Page<NotificationResponse> findAll(NotificationStatus status, Pageable pageable) {
+        return notificationRepository.findAll(status, pageable)
+                .map(notificationMapper::toResponse);
+    }
+
+    @Override
     public List<DeliveryAttemptResponse> findAttemptsByNotificationId(UUID id) {
         var notification = notificationRepository.findById(id)
                 .orElseThrow(() -> new NotificationNotFoundException(id));

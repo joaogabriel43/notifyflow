@@ -14,7 +14,7 @@ export class NotificationSignalService {
 
   constructor(private notificationService: NotificationService) {}
 
-  loadNotifications(tenantId: string, status?: string, page = 0, size = 10): void {
+  loadNotifications(tenantId?: string, status?: string, page = 0, size = 10): void {
     this.loading.set(true);
     this.error.set(null);
     this.notificationService.getNotifications(tenantId, status, page, size).subscribe({

@@ -85,12 +85,15 @@ public class NotificationController {
             @ApiResponse(responseCode = "200", description = "Notifications retrieved successfully")
     })
     public ResponseEntity<Page<NotificationResponse>> list(
-            @RequestParam String tenantId,
+            @RequestParam(required = false) String tenantId,
             @RequestParam(required = false) NotificationStatus status,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "20") int size) {
         var pageable = PageRequest.of(page, size);
-        return ResponseEntity.ok(getNotificationUseCase.findByTenantId(tenantId, status, pageable));
+        if (tenantId != null && !tenantId.isBlank()) {
+            return ResponseEntity.ok(getNotificationUseCase.findByTenantId(tenantId.trim(), status, pageable));
+        }
+        return ResponseEntity.ok(getNotificationUseCase.findAll(status, pageable));
     }
 
     @GetMapping("/{id}/attempts")

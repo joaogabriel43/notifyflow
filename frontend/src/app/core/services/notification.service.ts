@@ -14,13 +14,16 @@ export class NotificationService {
 
   constructor(private http: HttpClient) {}
 
-  getNotifications(tenantId: string, status?: string, page: number = 0, size: number = 20): Observable<Page<Notification>> {
+  getNotifications(tenantId?: string, status?: string, page: number = 0, size: number = 20): Observable<Page<Notification>> {
     let params = new HttpParams()
-      .set('tenantId', tenantId)
       .set('page', page.toString())
       .set('size', size.toString());
 
-    if (status) {
+    if (tenantId && tenantId.trim()) {
+      params = params.set('tenantId', tenantId.trim());
+    }
+
+    if (status && status !== 'All') {
       params = params.set('status', status);
     }
     return this.http.get<Page<Notification>>(this.apiUrl, { params });
