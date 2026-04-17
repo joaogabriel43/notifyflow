@@ -52,7 +52,8 @@ public class NotificationEntity {
     @Column(name = "template_body")
     private String templateBody;
 
-    @Column(name = "template_variables")
+    @Column(name = "template_variables", columnDefinition = "jsonb")
+    @org.hibernate.annotations.JdbcTypeCode(org.hibernate.type.SqlTypes.JSON)
     private String templateVariables;
 
     @Column(name = "created_at", nullable = false, updatable = false)

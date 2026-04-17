@@ -22,7 +22,8 @@ public class NotificationOutboxEntity {
     @Column(name = "notification_id", nullable = false)
     private UUID notificationId;
 
-    @Column(nullable = false)
+    @Column(name = "payload", nullable = false, columnDefinition = "jsonb")
+    @org.hibernate.annotations.JdbcTypeCode(org.hibernate.type.SqlTypes.JSON)
     private String payload;
 
     @Enumerated(EnumType.STRING)
