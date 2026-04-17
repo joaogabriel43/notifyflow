@@ -20,13 +20,13 @@ public class NotificationPublisher {
         this.rabbitTemplate = rabbitTemplate;
     }
 
-    public void publish(String payload) {
+    public void publish(Object message) {
         log.info("Publishing notification to exchange: {} with routing key: {}",
                 RabbitMQConfig.NOTIFICATION_EXCHANGE, RabbitMQConfig.NOTIFICATION_ROUTING_KEY);
         rabbitTemplate.convertAndSend(
                 RabbitMQConfig.NOTIFICATION_EXCHANGE,
                 RabbitMQConfig.NOTIFICATION_ROUTING_KEY,
-                payload
+                message
         );
     }
 }

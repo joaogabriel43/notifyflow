@@ -3,6 +3,8 @@ package com.joaogabriel.notifyflow.infrastructure.outbox;
 import com.joaogabriel.notifyflow.domain.port.out.NotificationOutboxPort;
 import com.joaogabriel.notifyflow.infrastructure.messaging.publisher.NotificationPublisher;
 import com.joaogabriel.notifyflow.infrastructure.persistence.entity.NotificationOutboxEntity;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.joaogabriel.notifyflow.infrastructure.messaging.consumer.NotificationMessage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
@@ -27,11 +29,14 @@ public class OutboxScheduler {
 
     private final NotificationOutboxPort outboxPort;
     private final NotificationPublisher publisher;
+    private final ObjectMapper objectMapper;
 
     public OutboxScheduler(NotificationOutboxPort outboxPort,
-                           NotificationPublisher publisher) {
+                           NotificationPublisher publisher,
+                           ObjectMapper objectMapper) {
         this.outboxPort = outboxPort;
         this.publisher = publisher;
+        this.objectMapper = objectMapper;
     }
 
     @Scheduled(fixedDelay = 5000)
@@ -51,7 +56,8 @@ public class OutboxScheduler {
     @Transactional
     public void processEvent(NotificationOutboxEntity event) {
         try {
-            publisher.publish(event.getPayload());
+            NotificationMessage message = objectMapper.readValue(event.getPayload(), NotificationMessage.class);
+            publisher.publish(message);
             outboxPort.markAsPublished(event.getId());
             log.info("Published outbox entry: {}", event.getId());
         } catch (Exception e) {

@@ -17,6 +17,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.joaogabriel.notifyflow.infrastructure.messaging.consumer.NotificationMessage;
 import java.util.UUID;
 
 /**
@@ -36,15 +38,18 @@ public class SendNotificationService implements SendNotificationUseCase {
     private final NotificationOutboxPort notificationOutbox;
     private final NotificationMapper notificationMapper;
     private final TenantRateLimiterService tenantRateLimiterService;
+    private final ObjectMapper objectMapper;
 
     public SendNotificationService(NotificationRepositoryPort notificationRepository,
                                    NotificationOutboxPort notificationOutbox,
                                    NotificationMapper notificationMapper,
-                                   TenantRateLimiterService tenantRateLimiterService) {
+                                   TenantRateLimiterService tenantRateLimiterService,
+                                   ObjectMapper objectMapper) {
         this.notificationRepository = notificationRepository;
         this.notificationOutbox = notificationOutbox;
         this.notificationMapper = notificationMapper;
         this.tenantRateLimiterService = tenantRateLimiterService;
+        this.objectMapper = objectMapper;
     }
 
     @Override
@@ -83,15 +88,19 @@ public class SendNotificationService implements SendNotificationUseCase {
 
             var saved = notificationRepository.save(notification);
 
-            String payload = String.format("{\"notificationId\":\"%s\",\"tenantId\":\"%s\",\"channel\":\"%s\",\"createdAt\":\"%s\"}",
-                    saved.getId(), saved.getTenantId(), saved.getPreferredChannel(), saved.getCreatedAt());
+            String payload = objectMapper.writeValueAsString(new NotificationMessage(
+                saved.getId(),
+                saved.getTenantId(), 
+                saved.getPreferredChannel(),
+                saved.getCreatedAt()
+            ));
             notificationOutbox.saveOutboxEntry(saved.getId(), payload);
 
             log.info("Notification saved successfully with id: {}", saved.getId());
             return notificationMapper.toResponse(saved);
         } catch (Exception e) {
             log.error("Failed to save notification: {}", e.getMessage(), e);
-            throw e;
+            throw new RuntimeException(e);
         }
     }
 }
