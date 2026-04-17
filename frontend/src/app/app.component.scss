@@ -8,8 +8,8 @@
 
 .sidenav {
   width: 250px;
-  background-color: #fff;
-  border-right: 1px solid #e0e0e0;
+  background-color: var(--bg-card);
+  border-right: 1px solid var(--border);
 }
 
 .logo-container {
@@ -17,8 +17,8 @@
   align-items: center;
   padding: 24px 16px;
   gap: 12px;
-  color: #3f51b5;
-  border-bottom: 1px solid #eee;
+  color: var(--accent);
+  border-bottom: 1px solid var(--border);
 
   mat-icon {
     font-size: 32px;
@@ -33,18 +33,30 @@
 }
 
 .active-link {
-  background-color: rgba(63, 81, 181, 0.1);
-  color: #3f51b5;
+  background-color: rgba(0, 113, 227, 0.1);
+  color: var(--accent);
   
   mat-icon {
-    color: #3f51b5;
+    color: var(--accent);
   }
 }
 
-.top-toolbar {
-  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-  z-index: 2;
-  position: relative;
+.navbar {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background: rgba(255, 255, 255, 0.72);
+  backdrop-filter: saturate(180%) blur(20px);
+  border-bottom: 1px solid var(--border);
+  padding: 0 24px;
+  height: 52px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+[data-theme="dark"] .navbar {
+  background: rgba(0, 0, 0, 0.72);
 }
 
 .spacer {
@@ -52,7 +64,7 @@
 }
 
 .main-content {
-  height: calc(100% - 64px);
+  height: calc(100% - 52px);
   overflow-y: auto;
-  background-color: #f5f5f5;
+  background-color: var(--bg-secondary);
 }

@@ -34,19 +34,19 @@ Sistemas de notificação frágeis são um problema recorrente na indústria: em
 
 ```mermaid
 graph LR
-    Client-->|POST /api/v1/notifications|API
-    API-->|@Transactional|DB[(PostgreSQL)]
-    API-->|save outbox|DB
-    Scheduler-->|poll PENDING|DB
-    Scheduler-->|publish|RabbitMQ
+    Client-->|"POST /api/v1/notifications"|API
+    API-->|"@Transactional"|DB[(PostgreSQL)]
+    API-->|"save outbox"|DB
+    Scheduler-->|"poll PENDING"|DB
+    Scheduler-->|"publish"|RabbitMQ
     RabbitMQ-->Consumer
-    Consumer-->|EMAIL|SendGrid
-    Consumer-->|SMS|Twilio
-    Consumer-->|PUSH|Firebase
-    Consumer-->|update status|DB
-    SendGrid-->|failed|DLQ
+    Consumer-->|"EMAIL"|SendGrid
+    Consumer-->|"SMS"|Twilio
+    Consumer-->|"PUSH"|Firebase
+    Consumer-->|"update status"|DB
+    SendGrid-->|"failed"|DLQ
     DLQ-->DeadLetterConsumer
-    DeadLetterConsumer-->|mark FAILED|DB
+    DeadLetterConsumer-->|"mark FAILED"|DB
 ```
 
 ### Clean Architecture — dependências entre camadas

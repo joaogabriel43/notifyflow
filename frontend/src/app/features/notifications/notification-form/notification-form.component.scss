@@ -2,6 +2,7 @@
   display: flex;
   flex-direction: column;
   padding-top: 8px;
+  animation: fadeUp 0.3s cubic-bezier(0.16, 1, 0.3, 1);
 
   .full-width {
     width: 100%;
@@ -20,6 +21,33 @@
     margin: 16px 0 8px;
     font-size: 16px;
     font-weight: 500;
-    color: #3f51b5;
+    color: var(--accent);
+  }
+}
+
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(16px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+::ng-deep .mat-mdc-dialog-surface {
+  border-radius: 20px !important;
+  box-shadow: var(--shadow) !important;
+  background: var(--bg-card) !important;
+}
+
+::ng-deep .mat-mdc-text-field-wrapper {
+  background-color: var(--bg-secondary) !important;
+}
+
+.apple-submit {
+  background-color: var(--accent) !important;
+  color: white !important;
+  border-radius: 20px !important;
+  font-weight: 600;
+  transition: background-color 0.2s ease;
+  
+  &:hover {
+    background-color: var(--accent-hover) !important;
   }
 }

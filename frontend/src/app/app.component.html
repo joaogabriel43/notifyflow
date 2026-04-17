@@ -17,13 +17,16 @@
   </mat-sidenav>
 
   <mat-sidenav-content>
-    <mat-toolbar color="primary" class="top-toolbar">
+    <div class="navbar">
       <span>NotifyFlow Management Console</span>
-      <span class="spacer"></span>
+      <div class="spacer"></div>
+      <button mat-icon-button (click)="themeService.toggle()">
+        <mat-icon>{{ themeService.isDarkMode() ? 'light_mode' : 'dark_mode' }}</mat-icon>
+      </button>
       <button mat-icon-button>
         <mat-icon>account_circle</mat-icon>
       </button>
-    </mat-toolbar>
+    </div>
     
     <div class="main-content">
       <router-outlet></router-outlet>
